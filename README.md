@@ -38,10 +38,18 @@ The `audio` module demonstrates a temporary one-way microphone link:
 - The microphone stream moves between browsers over WebRTC media tracks.
 - The room expires when the sender leaves.
 
+## Current Module: Chat
+
+The `chat` module demonstrates a bidirectional chat link with Dark Microsoft Teams aesthetics:
+
+- Java code lives under `es.brasatech.share_link.chat`.
+- Thymeleaf views live under `src/main/resources/static/templates/chat`.
+- Static browser assets live under `src/main/resources/static/chat`.
+- The host opens `/chat`, configures their media, and gets a `/chat/r/{room}` link.
+- Spring only coordinates the WebRTC signaling messages through `/chat/signal`.
+- Webcams, microphones, text messages, and file transfers move between browsers directly over WebRTC connection tracks and data channels.
+- The chat room exists until a participant closes the connection.
+
 ## Planned Modules
 
-These examples are documented here but intentionally not implemented yet.
-
-1. Chat link
-
-   This will be the final and richest sample. It should behave like a small Teams-style call where both sides can share webcam and microphone, exchange text messages, and send files. Unlike the one-time data link, the chat room should exist until one participant closes the connection.
+All planned modules have been implemented.

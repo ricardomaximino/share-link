@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teams Chat Link - Guest</title>
+  <link rel="stylesheet" href="/chat/style.css">
+</head>
+<body>
+
+  <!-- Teams Header -->
+  <header class="teams-header">
+    <div class="teams-logo">
+      <div class="teams-logo-icon">T</div>
+      <span>Teams Chat Link</span>
+    </div>
+    <div class="room-status">
+      <span class="status-dot idle" id="status-dot"></span>
+      <span id="status-text">Connecting...</span>
+    </div>
+  </header>
+
+  <!-- Setup screen -->
+  <main class="setup-container" id="setup-screen">
+    <div class="setup-card">
+      <h1 class="setup-title">Join Chat</h1>
+      <p class="setup-subtitle">Set up your camera and microphone, then join the call hosted by the link owner.</p>
+      
+      <div class="preview-box">
+        <video id="preview-video" class="preview-video" autoplay muted></video>
+        <div class="preview-placeholder" id="preview-placeholder">
+          <div class="avatar-large">G</div>
+          <p>Camera is off</p>
+        </div>
+      </div>
+
+      <div class="setup-controls">
+        <button id="toggle-mic-setup" class="btn-icon active" title="Mute Microphone">🎤</button>
+        <button id="toggle-cam-setup" class="btn-icon active" title="Turn Camera Off">📷</button>
+      </div>
+
+      <button id="btn-start" class="btn-primary">Join Meeting</button>
+    </div>
+  </main>
+
+  <!-- Meeting screen -->
+  <main class="meeting-container" id="meeting-screen" style="display: none;">
+    <!-- Video area -->
+    <div class="video-area" id="video-grid">
+      <!-- Local Video -->
+      <div class="video-card" id="local-video-card">
+        <video id="local-video" class="peer-video" autoplay muted></video>
+        <div class="peer-avatar-placeholder" id="local-avatar" style="display: none;">
+          <div class="avatar-large">G</div>
+        </div>
+        <span class="peer-name">You (Guest)</span>
+      </div>
+
+      <!-- Remote Video (rendered dynamically when peer joins) -->
+      <div class="video-card" id="remote-video-card" style="display: none;">
+        <video id="remote-video" class="peer-video remote-video" autoplay></video>
+        <div class="peer-avatar-placeholder" id="remote-avatar">
+          <div class="avatar-large">H</div>
+        </div>
+        <span class="peer-name">Host</span>
+      </div>
+    </div>
+
+    <!-- Floating controls bar -->
+    <div class="control-bar">
+      <button id="ctrl-mic" class="btn-icon active" title="Toggle Mic">🎤</button>
+      <button id="ctrl-cam" class="btn-icon active" title="Toggle Camera">📷</button>
+      <button id="ctrl-chat" class="btn-icon active" title="Toggle Chat">💬</button>
+      <div class="control-separator"></div>
+      <button id="ctrl-leave" class="btn-icon danger" title="Leave Call">📞</button>
+    </div>
+
+    <!-- Chat side panel -->
+    <aside class="chat-sidebar" id="chat-panel">
+      <div class="sidebar-header">
+        <span>Meeting Chat</span>
+        <button id="btn-close-chat" class="btn-copy" style="font-size: 16px;">✕</button>
+      </div>
+      
+      <!-- Messages history -->
+      <div class="chat-history" id="chat-messages">
+        <!-- Message bubbles or file cards go here -->
+      </div>
+
+      <!-- Chat input -->
+      <div class="chat-input-area">
+        <!-- Progress bar for files -->
+        <div id="file-progress-container" style="display: none;">
+          <div style="font-size: 11px; display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <span id="file-progress-label">Sending...</span>
+            <span id="file-progress-pct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="file-progress-bar"></div>
+          </div>
+        </div>
+
+        <div class="chat-input-row">
+          <button id="btn-attach" class="btn-attach" title="Attach file">📎</button>
+          <input type="file" id="file-input-raw">
+          <input type="text" id="chat-input-text" class="chat-textbox" placeholder="Type a message..." disabled>
+          <button id="btn-send-message" class="btn-send" disabled>➔</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script th:inline="javascript">
+    window.shareLinkRole = "receiver";
+    window.shareLinkRoom = /*[[${room}]]*/ "";
+  </script>
+  <script src="/chat/chat.js"></script>
+</body>
+</html>
