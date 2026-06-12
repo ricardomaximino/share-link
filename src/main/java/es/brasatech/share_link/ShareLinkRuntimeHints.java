@@ -32,5 +32,12 @@ public class ShareLinkRuntimeHints implements RuntimeHintsRegistrar {
 			hint.withMethod("builder", java.util.Collections.emptyList(), ExecutableMode.INVOKE);
 		});
 		hints.reflection().registerType(TypeReference.of("tools.jackson.databind.ObjectMapper"), MemberCategory.INVOKE_PUBLIC_METHODS);
+		hints.reflection().registerType(TypeReference.of("tools.jackson.databind.cfg.MapperBuilder"), MemberCategory.INVOKE_PUBLIC_METHODS);
+		hints.reflection().registerType(TypeReference.of("tools.jackson.databind.json.JsonMapper$Builder"), MemberCategory.INVOKE_PUBLIC_METHODS);
+
+		// Register Thymeleaf Mvc delegate for reflection
+		hints.reflection().registerType(TypeReference.of("org.thymeleaf.spring6.expression.Mvc$Spring41MvcUriComponentsBuilderDelegate"), 
+				MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS, 
+				MemberCategory.INVOKE_PUBLIC_METHODS);
 	}
 }
