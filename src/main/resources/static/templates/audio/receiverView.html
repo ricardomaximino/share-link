@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Share Link - audio receiver</title>
+  <link rel="stylesheet" href="/audio/style.css">
+</head>
+<body>
+  <h1>Listen to shared microphone</h1>
+  <div class="box">
+    <p id="status">Connecting to the sender...</p>
+  </div>
+  <audio id="remoteAudio" autoplay controls></audio>
+  <script th:inline="javascript">
+    window.shareLinkRoom = /*[[${room}]]*/ "";
+  </script>
+  <script src="/audio/receiver.js"></script>
+</body>
+</html>

@@ -26,14 +26,22 @@ The `video` module demonstrates a temporary one-way webcam link:
 - The webcam stream moves between browsers over WebRTC media tracks.
 - The room expires when the sender leaves.
 
+## Current Module: Audio
+
+The `audio` module demonstrates a temporary one-way microphone link:
+
+- Java code lives under `es.brasatech.share_link.audio`.
+- Thymeleaf views live under `src/main/resources/static/templates/audio`.
+- Static browser assets live under `src/main/resources/static/audio`.
+- The sender opens `/audio`, grants microphone access, and gets a `/audio/r/{room}` link.
+- Spring only coordinates the WebRTC signaling messages through `/audio/signal`.
+- The microphone stream moves between browsers over WebRTC media tracks.
+- The room expires when the sender leaves.
+
 ## Planned Modules
 
 These examples are documented here but intentionally not implemented yet.
 
-1. Audio link
-
-   The link creator shares their microphone. Whoever opens the link receives the creator's microphone stream. This should mirror the video module, but with audio-only media constraints.
-
-2. Chat link
+1. Chat link
 
    This will be the final and richest sample. It should behave like a small Teams-style call where both sides can share webcam and microphone, exchange text messages, and send files. Unlike the one-time data link, the chat room should exist until one participant closes the connection.

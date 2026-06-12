@@ -1,0 +1,41 @@
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+input {
+  font: inherit;
+}
+
+.box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 18px 0;
+  padding: 18px;
+}
+
+#link {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.meter {
+  background: #eee;
+  border-radius: 8px;
+  height: 24px;
+  overflow: hidden;
+}
+
+#level {
+  background: #2f7d4f;
+  height: 100%;
+  width: 0;
+}
+
+audio {
+  display: block;
+  width: 100%;
+}

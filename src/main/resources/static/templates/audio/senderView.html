@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Share Link - audio sender</title>
+  <link rel="stylesheet" href="/audio/style.css">
+</head>
+<body>
+  <h1>One-way microphone link</h1>
+  <p>This browser keeps the microphone stream. Spring only coordinates the WebRTC handshake.</p>
+  <div class="box">
+    <button id="create">Start microphone and create link</button>
+    <p><input id="link" readonly placeholder="Start the microphone, then share this link"></p>
+    <p id="status">Idle.</p>
+  </div>
+  <div class="meter" aria-hidden="true">
+    <div id="level"></div>
+  </div>
+  <script src="/audio/sender.js"></script>
+</body>
+</html>
