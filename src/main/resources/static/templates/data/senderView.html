@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Share Link - data sender</title>
+  <link rel="stylesheet" href="/data/style.css">
+</head>
+<body>
+  <h1>One-time data link</h1>
+  <p>This browser keeps the file. Spring only coordinates the WebRTC handshake.</p>
+  <div class="box">
+    <input id="file" type="file">
+    <button id="create">Create link</button>
+    <p><input id="link" readonly placeholder="Choose a file, then create a link"></p>
+    <p id="status">Idle.</p>
+  </div>
+  <script src="/data/sender.js"></script>
+</body>
+</html>
