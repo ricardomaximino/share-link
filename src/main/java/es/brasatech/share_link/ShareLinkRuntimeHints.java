@@ -37,7 +37,8 @@ public class ShareLinkRuntimeHints implements RuntimeHintsRegistrar {
 
 		// Register Thymeleaf Mvc delegate for reflection
 		hints.reflection().registerType(TypeReference.of("org.thymeleaf.spring6.expression.Mvc$Spring41MvcUriComponentsBuilderDelegate"), 
-				MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS, 
+				MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+				MemberCategory.INVOKE_DECLARED_METHODS,
 				MemberCategory.INVOKE_PUBLIC_METHODS);
 	}
 }
