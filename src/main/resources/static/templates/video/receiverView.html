@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Share Link - video receiver</title>
+  <link rel="stylesheet" href="/video/style.css">
+</head>
+<body>
+  <h1>Watch shared webcam</h1>
+  <div class="box">
+    <p id="status">Connecting to the sender...</p>
+  </div>
+  <video id="remoteVideo" autoplay playsinline></video>
+  <script th:inline="javascript">
+    window.shareLinkRoom = /*[[${room}]]*/ "";
+  </script>
+  <script src="/video/receiver.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Share Link - video sender</title>
+  <link rel="stylesheet" href="/video/style.css">
+</head>
+<body>
+  <h1>One-way webcam link</h1>
+  <p>This browser keeps the webcam stream. Spring only coordinates the WebRTC handshake.</p>
+  <div class="box">
+    <button id="create">Start webcam and create link</button>
+    <p><input id="link" readonly placeholder="Start the webcam, then share this link"></p>
+    <p id="status">Idle.</p>
+  </div>
+  <video id="localVideo" autoplay muted playsinline></video>
+  <script src="/video/sender.js"></script>
+</body>
+</html>
