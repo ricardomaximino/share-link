@@ -14,6 +14,6 @@ public class VideoWebSocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(signalHandler, "/video/signal");
+		registry.addHandler(signalHandler, "/video/signal").setAllowedOrigins("*");
 	}
 }

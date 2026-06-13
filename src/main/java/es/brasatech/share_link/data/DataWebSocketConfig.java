@@ -16,6 +16,6 @@ public class DataWebSocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(signalHandler, "/data/signal");
+		registry.addHandler(signalHandler, "/data/signal").setAllowedOrigins("*");
 	}
 }

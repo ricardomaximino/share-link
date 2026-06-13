@@ -14,6 +14,6 @@ public class AudioWebSocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(signalHandler, "/audio/signal");
+		registry.addHandler(signalHandler, "/audio/signal").setAllowedOrigins("*");
 	}
 }
