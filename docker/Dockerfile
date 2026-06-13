@@ -8,7 +8,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy the native binary [Linux only]
-COPY target/webapplication ./share-link
+COPY target/share-link ./share-link
 
 # Make it executable
 RUN chmod +x share-link
