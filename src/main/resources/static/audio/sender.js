@@ -1,5 +1,6 @@
 const create = document.querySelector("#create");
 const link = document.querySelector("#link");
+const btnCopy = document.querySelector("#btn-copy-link");
 const status = document.querySelector("#status");
 const level = document.querySelector("#level");
 let socket;
@@ -8,6 +9,17 @@ let localStream;
 let audioContext;
 let analyser;
 let meterFrame;
+
+if (btnCopy) {
+  btnCopy.onclick = () => {
+    link.select();
+    navigator.clipboard.writeText(link.value);
+    btnCopy.textContent = "Copied!";
+    setTimeout(() => {
+      btnCopy.textContent = "Copy Link";
+    }, 2000);
+  };
+}
 
 create.onclick = async () => {
   try {
@@ -20,6 +32,9 @@ create.onclick = async () => {
   startMeter(localStream);
   const room = crypto.randomUUID();
   link.value = `${location.origin}/audio/r/${room}`;
+  if (btnCopy) {
+    btnCopy.style.display = "inline-block";
+  }
   status.textContent = "Microphone is ready. Link is alive while this tab stays open.";
   socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/audio/signal?role=sender&room=${room}`);
 

@@ -11,7 +11,10 @@
   <p>This browser keeps the microphone stream. Spring only coordinates the WebRTC handshake.</p>
   <div class="box">
     <button id="create">Start microphone and create link</button>
-    <p><input id="link" readonly placeholder="Start the microphone, then share this link"></p>
+    <div class="link-container">
+      <input id="link" readonly placeholder="Start the microphone, then share this link">
+      <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+    </div>
     <p id="status">Idle.</p>
   </div>
   <div class="meter" aria-hidden="true">

@@ -1,10 +1,22 @@
 const create = document.querySelector("#create");
 const link = document.querySelector("#link");
+const btnCopy = document.querySelector("#btn-copy-link");
 const status = document.querySelector("#status");
 const localVideo = document.querySelector("#localVideo");
 let socket;
 let pc;
 let localStream;
+
+if (btnCopy) {
+  btnCopy.onclick = () => {
+    link.select();
+    navigator.clipboard.writeText(link.value);
+    btnCopy.textContent = "Copied!";
+    setTimeout(() => {
+      btnCopy.textContent = "Copy Link";
+    }, 2000);
+  };
+}
 
 create.onclick = async () => {
   try {
@@ -17,6 +29,9 @@ create.onclick = async () => {
   localVideo.srcObject = localStream;
   const room = crypto.randomUUID();
   link.value = `${location.origin}/video/r/${room}`;
+  if (btnCopy) {
+    btnCopy.style.display = "inline-block";
+  }
   status.textContent = "Webcam is ready. Link is alive while this tab stays open.";
   socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/video/signal?role=sender&room=${room}`);
 

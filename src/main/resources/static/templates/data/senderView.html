@@ -12,7 +12,10 @@
   <div class="box">
     <input id="file" type="file">
     <button id="create">Create link</button>
-    <p><input id="link" readonly placeholder="Choose a file, then create a link"></p>
+    <div class="link-container">
+      <input id="link" readonly placeholder="Choose a file, then create a link">
+      <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+    </div>
     <p id="status">Idle.</p>
   </div>
   <script src="/data/sender.js"></script>

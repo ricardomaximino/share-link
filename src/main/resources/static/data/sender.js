@@ -1,10 +1,22 @@
 const fileInput = document.querySelector("#file");
 const create = document.querySelector("#create");
 const link = document.querySelector("#link");
+const btnCopy = document.querySelector("#btn-copy-link");
 const status = document.querySelector("#status");
 let socket;
 let pc;
 let channel;
+
+if (btnCopy) {
+  btnCopy.onclick = () => {
+    link.select();
+    navigator.clipboard.writeText(link.value);
+    btnCopy.textContent = "Copied!";
+    setTimeout(() => {
+      btnCopy.textContent = "Copy Link";
+    }, 2000);
+  };
+}
 
 create.onclick = async () => {
   const file = fileInput.files[0];
@@ -15,6 +27,9 @@ create.onclick = async () => {
 
   const room = crypto.randomUUID();
   link.value = `${location.origin}/data/r/${room}`;
+  if (btnCopy) {
+    btnCopy.style.display = "inline-block";
+  }
   status.textContent = "Link is alive while this tab stays open. Waiting for one receiver...";
   socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/data/signal?role=sender&room=${room}`);
 

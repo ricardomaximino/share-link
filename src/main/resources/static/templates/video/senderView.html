@@ -11,7 +11,10 @@
   <p>This browser keeps the webcam stream. Spring only coordinates the WebRTC handshake.</p>
   <div class="box">
     <button id="create">Start webcam and create link</button>
-    <p><input id="link" readonly placeholder="Start the webcam, then share this link"></p>
+    <div class="link-container">
+      <input id="link" readonly placeholder="Start the webcam, then share this link">
+      <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+    </div>
     <p id="status">Idle.</p>
   </div>
   <video id="localVideo" autoplay muted playsinline></video>
