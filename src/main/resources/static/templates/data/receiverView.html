@@ -7,11 +7,24 @@
   <link rel="stylesheet" href="/data/style.css">
 </head>
 <body>
-  <h1>Download shared file</h1>
-  <div class="box">
-    <p id="status">Connecting to the sender...</p>
-    <p id="download"></p>
-  </div>
+
+  <!-- Teams Header -->
+  <header class="teams-header">
+    <div class="teams-logo">
+      <div class="teams-logo-icon">D</div>
+      <span>Teams Data Link</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="setup-container">
+    <div class="setup-card">
+      <h1 class="setup-title">Download shared file</h1>
+      <p id="status" class="setup-subtitle" style="margin-bottom: 25px;">Connecting to the sender...</p>
+      <div id="download" style="margin-top: 15px;"></div>
+    </div>
+  </main>
+
   <script th:inline="javascript">
     window.shareLinkRoom = /*[[${room}]]*/ "";
   </script>

@@ -7,17 +7,34 @@
   <link rel="stylesheet" href="/video/style.css">
 </head>
 <body>
-  <h1>One-way webcam link</h1>
-  <p>This browser keeps the webcam stream. Spring only coordinates the WebRTC handshake.</p>
-  <div class="box">
-    <button id="create">Start webcam and create link</button>
-    <div class="link-container">
-      <input id="link" readonly placeholder="Start the webcam, then share this link">
-      <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+
+  <!-- Teams Header -->
+  <header class="teams-header">
+    <div class="teams-logo">
+      <div class="teams-logo-icon">V</div>
+      <span>Teams Video Link</span>
     </div>
-    <p id="status">Idle.</p>
-  </div>
-  <video id="localVideo" autoplay muted playsinline></video>
+  </header>
+
+  <!-- Setup screen -->
+  <main class="setup-container">
+    <div class="setup-card">
+      <h1 class="setup-title">One-way webcam link</h1>
+      <p class="setup-subtitle">This browser keeps the webcam stream. Spring only coordinates the WebRTC handshake.</p>
+      
+      <button id="create" class="btn-primary" style="margin-bottom: 20px;">Start webcam and create link</button>
+
+      <div class="link-box">
+        <input id="link" class="link-input" readonly placeholder="Start the webcam, then share this link">
+        <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+      </div>
+
+      <p id="status" class="setup-subtitle" style="margin-top: 20px; margin-bottom: 20px;">Idle.</p>
+
+      <video id="localVideo" autoplay muted playsinline style="width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; border: 1px solid var(--border-color);"></video>
+    </div>
+  </main>
+
   <script src="/video/sender.js"></script>
 </body>
 </html>

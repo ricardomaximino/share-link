@@ -7,11 +7,25 @@
   <link rel="stylesheet" href="/video/style.css">
 </head>
 <body>
-  <h1>Watch shared webcam</h1>
-  <div class="box">
-    <p id="status">Connecting to the sender...</p>
-  </div>
-  <video id="remoteVideo" autoplay playsinline></video>
+
+  <!-- Teams Header -->
+  <header class="teams-header">
+    <div class="teams-logo">
+      <div class="teams-logo-icon">V</div>
+      <span>Teams Video Link</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="setup-container">
+    <div class="setup-card">
+      <h1 class="setup-title">Watch shared webcam</h1>
+      <p id="status" class="setup-subtitle" style="margin-bottom: 25px;">Connecting to the sender...</p>
+      
+      <video id="remoteVideo" autoplay playsinline style="width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; border: 1px solid var(--border-color);"></video>
+    </div>
+  </main>
+
   <script th:inline="javascript">
     window.shareLinkRoom = /*[[${room}]]*/ "";
   </script>

@@ -7,17 +7,44 @@
   <link rel="stylesheet" href="/data/style.css">
 </head>
 <body>
-  <h1>One-time data link</h1>
-  <p>This browser keeps the file. Spring only coordinates the WebRTC handshake.</p>
-  <div class="box">
-    <input id="file" type="file">
-    <button id="create">Create link</button>
-    <div class="link-container">
-      <input id="link" readonly placeholder="Choose a file, then create a link">
-      <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+
+  <!-- Teams Header -->
+  <header class="teams-header">
+    <div class="teams-logo">
+      <div class="teams-logo-icon">D</div>
+      <span>Teams Data Link</span>
     </div>
-    <p id="status">Idle.</p>
-  </div>
+  </header>
+
+  <!-- Setup screen -->
+  <main class="setup-container">
+    <div class="setup-card">
+      <h1 class="setup-title">One-time data link</h1>
+      <p class="setup-subtitle">This browser keeps the file. Spring only coordinates the WebRTC handshake.</p>
+      
+      <div class="setup-controls" style="margin-bottom: 20px;">
+        <input id="file" type="file" style="display: none;">
+        <label for="file" class="btn-secondary">Choose File</label>
+        <div id="file-name" style="margin-top: 10px; font-size: 13px; color: var(--text-muted);">No file chosen</div>
+      </div>
+
+      <button id="create" class="btn-primary" style="margin-bottom: 20px;">Create Link</button>
+
+      <div class="link-box">
+        <input id="link" class="link-input" readonly placeholder="Choose a file, then create a link">
+        <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+      </div>
+
+      <p id="status" class="setup-subtitle" style="margin-top: 20px; margin-bottom: 0;">Idle.</p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('file').addEventListener('change', function() {
+      const name = this.files[0] ? this.files[0].name : 'No file chosen';
+      document.getElementById('file-name').textContent = name;
+    });
+  </script>
   <script src="/data/sender.js"></script>
 </body>
 </html>

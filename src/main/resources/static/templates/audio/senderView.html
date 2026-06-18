@@ -7,19 +7,36 @@
   <link rel="stylesheet" href="/audio/style.css">
 </head>
 <body>
-  <h1>One-way microphone link</h1>
-  <p>This browser keeps the microphone stream. Spring only coordinates the WebRTC handshake.</p>
-  <div class="box">
-    <button id="create">Start microphone and create link</button>
-    <div class="link-container">
-      <input id="link" readonly placeholder="Start the microphone, then share this link">
-      <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+
+  <!-- Teams Header -->
+  <header class="teams-header">
+    <div class="teams-logo">
+      <div class="teams-logo-icon">A</div>
+      <span>Teams Audio Link</span>
     </div>
-    <p id="status">Idle.</p>
-  </div>
-  <div class="meter" aria-hidden="true">
-    <div id="level"></div>
-  </div>
+  </header>
+
+  <!-- Setup screen -->
+  <main class="setup-container">
+    <div class="setup-card">
+      <h1 class="setup-title">One-way microphone link</h1>
+      <p class="setup-subtitle">This browser keeps the microphone stream. Spring only coordinates the WebRTC handshake.</p>
+      
+      <button id="create" class="btn-primary" style="margin-bottom: 20px;">Start microphone and create link</button>
+
+      <div class="link-box">
+        <input id="link" class="link-input" readonly placeholder="Start the microphone, then share this link">
+        <button id="btn-copy-link" class="btn-copy" style="display: none;">Copy Link</button>
+      </div>
+
+      <p id="status" class="setup-subtitle" style="margin-top: 20px; margin-bottom: 20px;">Idle.</p>
+
+      <div class="meter" aria-hidden="true" style="margin-top: 10px;">
+        <div id="level"></div>
+      </div>
+    </div>
+  </main>
+
   <script src="/audio/sender.js"></script>
 </body>
 </html>
