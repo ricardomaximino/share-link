@@ -7,6 +7,10 @@ Linux:
  mvn clean install && mvn -Pnative native:compile && docker build -f docker/Dockerfile --tag ricardomaximino/share-link . && docker push ricardomaximino/share-link:latest
 `
 
+`
+docker run --rm -p8080:8080 ricardomaximino/share-link:latest
+`
+
 This project is a learning playground for temporary peer-to-peer links.
 
 ## Current Module: Data
