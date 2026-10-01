@@ -147,9 +147,9 @@ if (btnCopyLink) {
   btnCopyLink.onclick = () => {
     roomLink.select();
     navigator.clipboard.writeText(roomLink.value);
-    btnCopyLink.textContent = "Copied!";
+    btnCopyLink.textContent = typeof t === "function" ? t("copied") : "Copied!";
     setTimeout(() => {
-      btnCopyLink.textContent = "Copy Link";
+      btnCopyLink.textContent = typeof t === "function" ? t("copyLink") : "Copy Link";
     }, 2000);
   };
 }
@@ -216,14 +216,14 @@ btnStart.onclick = async () => {
 
 function connectWS() {
   statusDot.className = "status-dot connecting";
-  statusText.textContent = role === "sender" ? "Waiting for guest..." : "Joining call...";
+  statusText.textContent = typeof t === "function" ? (role === "sender" ? t("statusWaiting") : t("statusJoining")) : (role === "sender" ? "Waiting for guest..." : "Joining call...");
 
   let inactivityTimer;
   if (role === "sender") {
     inactivityTimer = setTimeout(() => {
-      appendLog("System", "Chat room closed due to inactivity (no guest joined within 10 minutes).", "warning");
+      appendLog("System", typeof t === "function" ? t("inactivityExpired") : "Chat room closed due to inactivity (no guest joined within 10 minutes).", "warning");
       statusDot.className = "status-dot idle";
-      statusText.textContent = "Expired";
+      statusText.textContent = typeof t === "function" ? t("statusExpired") : "Expired";
       disableInputs();
       if (pingInterval) clearInterval(pingInterval);
       if (socket) socket.close();
@@ -248,7 +248,7 @@ function connectWS() {
     if (msg.type === "receiver-joined") {
       if (inactivityTimer) clearTimeout(inactivityTimer);
       statusDot.className = "status-dot";
-      statusText.textContent = "Call Active";
+      statusText.textContent = typeof t === "function" ? t("statusActive") : "Call Active";
       
       // Enter meeting UI
       setupScreen.style.display = "none";
@@ -261,7 +261,7 @@ function connectWS() {
     }
     else if (msg.type === "offer") {
       statusDot.className = "status-dot";
-      statusText.textContent = "Call Active";
+      statusText.textContent = typeof t === "function" ? t("statusActive") : "Call Active";
       
       setupScreen.style.display = "none";
       meetingScreen.style.display = "flex";
@@ -283,7 +283,7 @@ function connectWS() {
     else if (msg.type === "expired") {
       appendLog("System", msg.reason, "danger");
       statusDot.className = "status-dot idle";
-      statusText.textContent = "Disconnected";
+      statusText.textContent = typeof t === "function" ? t("statusDisconnected") : "Disconnected";
       disableInputs();
       if (pingInterval) clearInterval(pingInterval);
       if (pc) pc.close();
@@ -294,7 +294,7 @@ function connectWS() {
   socket.onclose = () => {
     if (pingInterval) clearInterval(pingInterval);
     statusDot.className = "status-dot idle";
-    statusText.textContent = "Disconnected";
+    statusText.textContent = typeof t === "function" ? t("statusDisconnected") : "Disconnected";
     disableInputs();
   };
 
@@ -323,7 +323,7 @@ async function initPeer() {
     remoteVideoCard.style.display = "flex";
     remoteAvatar.style.display = "none";
     videoGrid.classList.add("two-peers");
-    appendLog("System", "Guest joined the video call.", "info");
+    appendLog("System", typeof t === "function" ? t("guestJoined") : "Guest joined the video call.", "info");
   };
 
   pc.onicecandidate = event => {
@@ -336,10 +336,9 @@ async function initPeer() {
     if (pc.connectionState === "disconnected" || pc.connectionState === "failed" || pc.connectionState === "closed") {
       remoteVideoCard.style.display = "none";
       videoGrid.classList.remove("two-peers");
-      appendLog("System", "Peer disconnected.", "danger");
+      appendLog("System", typeof t === "function" ? t("participantLeft") : "Peer disconnected.", "danger");
       statusDot.className = "status-dot idle";
-      statusText.textContent = "Peer Disconnected";
-      disableInputs();
+      statusText.textContent = typeof t === "function" ? t("statusDisconnected") : "Disconnected";
     }
   };
 

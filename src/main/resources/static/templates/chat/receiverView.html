@@ -2,44 +2,63 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Share Chat Link - Guest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title data-i18n="appTitle">ShareLink</title>
   <link rel="stylesheet" href="/chat/style.css">
+  <script src="/chat/theme.js"></script>
+  <script src="/chat/i18n.js"></script>
 </head>
 <body>
 
-  <!-- Share Chat Link Header -->
-  <header class="teams-header">
-    <div class="teams-logo">
-      <div class="teams-logo-icon">T</div>
-      <span>Share Chat Link</span>
+  <!-- App Header with Branding, Theme & Language Selectors -->
+  <header class="app-header">
+    <div class="brand-logo">
+      <div class="brand-logo-icon">T</div>
+      <span data-i18n="appTitle">ShareLink</span>
     </div>
-    <div class="room-status">
-      <span class="status-dot idle" id="status-dot"></span>
-      <span id="status-text">Connecting...</span>
+
+    <div class="header-controls">
+      <!-- Theme Switcher -->
+      <select id="theme-select" class="select-pill" title="Theme">
+        <option value="teams">Teams</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="zoom">Zoom</option>
+      </select>
+
+      <!-- Language Selector -->
+      <select id="lang-select" class="select-pill" title="Language">
+        <option value="en">🇺🇸 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="pt">🇧🇷 Português</option>
+      </select>
+
+      <div class="room-status">
+        <span class="status-dot idle" id="status-dot"></span>
+        <span id="status-text" data-i18n="statusConnecting">Connecting...</span>
+      </div>
     </div>
   </header>
 
   <!-- Setup screen -->
   <main class="setup-container" id="setup-screen">
     <div class="setup-card">
-      <h1 class="setup-title">Join Chat</h1>
-      <p class="setup-subtitle">Set up your camera and microphone, then join the call hosted by the link owner.</p>
+      <h1 class="setup-title" data-i18n="setupGuestTitle">Join Chat</h1>
+      <p class="setup-subtitle" data-i18n="setupGuestSubtitle">Set up your camera and microphone, then join the call hosted by the link owner.</p>
       
       <div class="preview-box">
-        <video id="preview-video" class="preview-video" autoplay muted></video>
+        <video id="preview-video" class="preview-video" autoplay muted playsinline></video>
         <div class="preview-placeholder" id="preview-placeholder">
           <div class="avatar-large">G</div>
-          <p>Camera is off</p>
+          <p data-i18n="cameraOff">Camera is off</p>
         </div>
       </div>
 
       <div class="setup-controls">
-        <button id="toggle-mic-setup" class="btn-icon active" title="Mute Microphone">🎤</button>
-        <button id="toggle-cam-setup" class="btn-icon active" title="Turn Camera Off">📷</button>
+        <button id="toggle-mic-setup" class="btn-icon active" data-i18n-title="muteMic" title="Mute Microphone">🎤</button>
+        <button id="toggle-cam-setup" class="btn-icon active" data-i18n-title="turnCamOff" title="Turn Camera Off">📷</button>
       </div>
 
-      <button id="btn-start" class="btn-primary">Join Meeting</button>
+      <button id="btn-start" class="btn-primary" data-i18n="btnStartGuest">Join Meeting</button>
     </div>
   </main>
 
@@ -49,36 +68,36 @@
     <div class="video-area" id="video-grid">
       <!-- Local Video -->
       <div class="video-card" id="local-video-card">
-        <video id="local-video" class="peer-video" autoplay muted></video>
+        <video id="local-video" class="peer-video" autoplay muted playsinline></video>
         <div class="peer-avatar-placeholder" id="local-avatar" style="display: none;">
           <div class="avatar-large">G</div>
         </div>
-        <span class="peer-name">You (Guest)</span>
+        <span class="peer-name" id="local-peer-name" data-i18n="youGuest">You (Guest)</span>
       </div>
 
       <!-- Remote Video (rendered dynamically when peer joins) -->
       <div class="video-card" id="remote-video-card" style="display: none;">
-        <video id="remote-video" class="peer-video remote-video" autoplay></video>
+        <video id="remote-video" class="peer-video remote-video" autoplay playsinline></video>
         <div class="peer-avatar-placeholder" id="remote-avatar">
           <div class="avatar-large">H</div>
         </div>
-        <span class="peer-name">Host</span>
+        <span class="peer-name" id="remote-peer-name" data-i18n="host">Host</span>
       </div>
     </div>
 
     <!-- Floating controls bar -->
     <div class="control-bar">
-      <button id="ctrl-mic" class="btn-icon active" title="Toggle Mic">🎤</button>
-      <button id="ctrl-cam" class="btn-icon active" title="Toggle Camera">📷</button>
-      <button id="ctrl-chat" class="btn-icon active" title="Toggle Chat">💬</button>
+      <button id="ctrl-mic" class="btn-icon active" data-i18n-title="toggleMic" title="Toggle Mic">🎤</button>
+      <button id="ctrl-cam" class="btn-icon active" data-i18n-title="toggleCam" title="Toggle Camera">📷</button>
+      <button id="ctrl-chat" class="btn-icon active" data-i18n-title="toggleChat" title="Toggle Chat">💬</button>
       <div class="control-separator"></div>
-      <button id="ctrl-leave" class="btn-icon danger" title="Leave Call">📞</button>
+      <button id="ctrl-leave" class="btn-icon danger" data-i18n-title="leaveCall" title="Leave Call">📞</button>
     </div>
 
     <!-- Chat side panel -->
     <aside class="chat-sidebar" id="chat-panel">
       <div class="sidebar-header">
-        <span>Meeting Chat</span>
+        <span data-i18n="meetingChat">Meeting Chat</span>
         <button id="btn-close-chat" class="btn-copy" style="font-size: 16px;">✕</button>
       </div>
       
@@ -101,9 +120,9 @@
         </div>
 
         <div class="chat-input-row">
-          <button id="btn-attach" class="btn-attach" title="Attach file">📎</button>
+          <button id="btn-attach" class="btn-attach" data-i18n-title="attachFile" title="Attach file">📎</button>
           <input type="file" id="file-input-raw">
-          <input type="text" id="chat-input-text" class="chat-textbox" placeholder="Type a message..." disabled>
+          <input type="text" id="chat-input-text" class="chat-textbox" data-i18n-placeholder="typeMessage" placeholder="Type a message..." disabled>
           <button id="btn-send-message" class="btn-send" disabled>➔</button>
         </div>
       </div>
