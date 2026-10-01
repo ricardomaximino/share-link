@@ -324,3 +324,35 @@ To transfer files without going through a server:
 2. Slice the file into smaller byte chunks (e.g., 16KB).
 3. Send the bytes over the channel: `dataChannel.send(chunk)`.
 4. Re-assemble the buffer on the receiver side, create a `Blob`, and trigger a local download.
+
+---
+
+## 8. WebSockets in Serverless & Scale-to-Zero (Cloud Run)
+
+In modern serverless platforms like **Google Cloud Run**:
+
+### The Problem
+* The platform dynamically routes and auto-scales instances based on active HTTP requests.
+* When scaling to zero is enabled (`min-instances = 0`), Cloud Run considers an instance "idle" if no requests or frames are received over a period.
+* Furthermore, during WebRTC file transfers, **data flows peer-to-peer (browser to browser)** and bypasses the server entirely. The signaling WebSocket goes completely silent!
+* Without periodic traffic, the serverless proxy times out the WebSocket connection, or the instance scales to zero, deleting in-memory rooms and dropping connected users.
+
+### The Solution: Heartbeat (Ping / Pong)
+1. **Frontend Periodic Ping**: Send a lightweight ping message every 15 seconds:
+   ```javascript
+   const pingInterval = setInterval(() => {
+     if (socket && socket.readyState === WebSocket.OPEN) {
+       socket.send(JSON.stringify({ type: "ping" }));
+     }
+   }, 15000);
+   ```
+2. **Backend Pong Response**: The Spring `WebSocketHandler` receives the ping and replies with `{"type":"pong"}` without touching room states.
+   ```java
+   String type = jsonType(textMessage.getPayload());
+   if ("ping".equals(type)) {
+       send(session, "pong");
+       return;
+   }
+   ```
+3. This ongoing traffic signals to Cloud Run that the WebSocket is actively utilized, keeping the container alive as long as either participant has the tab open.
+

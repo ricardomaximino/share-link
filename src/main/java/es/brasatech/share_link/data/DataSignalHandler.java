@@ -52,6 +52,12 @@ public class DataSignalHandler extends TextWebSocketHandler {
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+		String type = jsonType(textMessage.getPayload());
+		if ("ping".equals(type)) {
+			send(session, "pong");
+			return;
+		}
+
 		String roomId = sessionRooms.get(session.getId());
 		if (roomId == null) {
 			send(session, "expired", "This link has expired.");
@@ -63,7 +69,7 @@ public class DataSignalHandler extends TextWebSocketHandler {
 			return;
 		}
 
-		if ("download-complete".equals(jsonType(textMessage.getPayload()))) {
+		if ("download-complete".equals(type)) {
 			room.markUsed();
 			expire(roomId, "Download finished. Link expired.");
 			return;

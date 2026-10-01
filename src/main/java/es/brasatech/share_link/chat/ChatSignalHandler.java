@@ -52,6 +52,12 @@ public class ChatSignalHandler extends TextWebSocketHandler {
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+		String type = jsonType(textMessage.getPayload());
+		if ("ping".equals(type)) {
+			send(session, "pong");
+			return;
+		}
+
 		String roomId = sessionRooms.get(session.getId());
 		if (roomId == null) {
 			send(session, "expired", "This chat room has expired.");
@@ -108,6 +114,21 @@ public class ChatSignalHandler extends TextWebSocketHandler {
 		if (session != null && session.isOpen()) {
 			session.sendMessage(new TextMessage(json));
 		}
+	}
+
+	private String jsonType(String json) {
+		String marker = "\"type\"";
+		int key = json.indexOf(marker);
+		if (key < 0) {
+			return null;
+		}
+		int colon = json.indexOf(':', key + marker.length());
+		int firstQuote = json.indexOf('"', colon + 1);
+		int secondQuote = json.indexOf('"', firstQuote + 1);
+		if (colon < 0 || firstQuote < 0 || secondQuote < 0) {
+			return null;
+		}
+		return json.substring(firstQuote + 1, secondQuote);
 	}
 
 	private String escapeJson(String value) {

@@ -49,6 +49,7 @@ let pc;
 let localStream;
 let chatChannel;
 let fileChannel;
+let pingInterval;
 
 let micEnabled = true;
 let camEnabled = true;
@@ -218,8 +219,18 @@ function connectWS() {
 
   socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/chat/signal?role=${role}&room=${room}`);
 
+  if (pingInterval) clearInterval(pingInterval);
+  pingInterval = setInterval(() => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "ping" }));
+    }
+  }, 15000);
+
   socket.onmessage = async event => {
     const msg = JSON.parse(event.data);
+    if (msg.type === "pong") {
+      return;
+    }
     
     if (msg.type === "receiver-joined") {
       statusDot.className = "status-dot";
@@ -260,15 +271,22 @@ function connectWS() {
       statusDot.className = "status-dot idle";
       statusText.textContent = "Disconnected";
       disableInputs();
+      if (pingInterval) clearInterval(pingInterval);
       if (pc) pc.close();
     }
   };
 
   socket.onclose = () => {
+    if (pingInterval) clearInterval(pingInterval);
     statusDot.className = "status-dot idle";
     statusText.textContent = "Disconnected";
     disableInputs();
   };
+
+  window.addEventListener("beforeunload", () => {
+    if (pingInterval) clearInterval(pingInterval);
+    socket?.close();
+  });
 }
 
 // Initialise WebRTC

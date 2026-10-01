@@ -1,0 +1,11 @@
+services:
+  share-link:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ricardomaximino/share-link-non-native:latest
+    container_name: share-link
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080

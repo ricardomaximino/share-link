@@ -2,10 +2,27 @@ const room = window.shareLinkRoom;
 const status = document.querySelector("#status");
 const download = document.querySelector("#download");
 const socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/data/signal?role=receiver&room=${room}`);
-let pc = new RTCPeerConnection();
+let pc = new RTCPeerConnection({
+  iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+});
 let meta;
 let received = 0;
 let chunks = [];
+
+const pingInterval = setInterval(() => {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify({ type: "ping" }));
+  }
+}, 15000);
+
+socket.onclose = () => {
+  clearInterval(pingInterval);
+};
+
+window.addEventListener("beforeunload", () => {
+  clearInterval(pingInterval);
+  socket?.close();
+});
 
 pc.onicecandidate = event => {
   if (event.candidate) send({ type: "ice", candidate: event.candidate });
@@ -19,6 +36,9 @@ pc.ondatachannel = event => {
 
 socket.onmessage = async event => {
   const message = JSON.parse(event.data);
+  if (message.type === "pong") {
+    return;
+  }
   if (message.type === "offer") {
     status.textContent = "Direct connection offer received. Answering...";
     await pc.setRemoteDescription(message.offer);
@@ -31,6 +51,7 @@ socket.onmessage = async event => {
   }
   if (message.type === "expired") {
     status.textContent = message.reason;
+    clearInterval(pingInterval);
   }
 };
 

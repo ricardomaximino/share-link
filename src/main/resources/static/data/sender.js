@@ -6,6 +6,7 @@ const status = document.querySelector("#status");
 let socket;
 let pc;
 let channel;
+let pingInterval;
 
 if (btnCopy) {
   btnCopy.onclick = () => {
@@ -33,8 +34,18 @@ create.onclick = async () => {
   status.textContent = "Link is alive while this tab stays open. Waiting for one receiver...";
   socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/data/signal?role=sender&room=${room}`);
 
+  if (pingInterval) clearInterval(pingInterval);
+  pingInterval = setInterval(() => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "ping" }));
+    }
+  }, 15000);
+
   socket.onmessage = async event => {
     const message = JSON.parse(event.data);
+    if (message.type === "pong") {
+      return;
+    }
     if (message.type === "receiver-joined") {
       status.textContent = "Receiver joined. Creating direct connection...";
       await startPeer(file);
@@ -47,15 +58,25 @@ create.onclick = async () => {
     }
     if (message.type === "expired") {
       status.textContent = message.reason;
+      if (pingInterval) clearInterval(pingInterval);
       socket.close();
     }
   };
 
-  window.addEventListener("beforeunload", () => socket?.close());
+  socket.onclose = () => {
+    if (pingInterval) clearInterval(pingInterval);
+  };
+
+  window.addEventListener("beforeunload", () => {
+    if (pingInterval) clearInterval(pingInterval);
+    socket?.close();
+  });
 };
 
 async function startPeer(file) {
-  pc = new RTCPeerConnection();
+  pc = new RTCPeerConnection({
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+  });
   channel = pc.createDataChannel("file");
 
   pc.onicecandidate = event => {

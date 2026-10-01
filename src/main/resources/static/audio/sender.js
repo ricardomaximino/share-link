@@ -9,6 +9,7 @@ let localStream;
 let audioContext;
 let analyser;
 let meterFrame;
+let pingInterval;
 
 if (btnCopy) {
   btnCopy.onclick = () => {
@@ -38,8 +39,18 @@ create.onclick = async () => {
   status.textContent = "Microphone is ready. Link is alive while this tab stays open.";
   socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/audio/signal?role=sender&room=${room}`);
 
+  if (pingInterval) clearInterval(pingInterval);
+  pingInterval = setInterval(() => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "ping" }));
+    }
+  }, 15000);
+
   socket.onmessage = async event => {
     const message = JSON.parse(event.data);
+    if (message.type === "pong") {
+      return;
+    }
     if (message.type === "receiver-joined") {
       status.textContent = "Receiver joined. Creating direct audio connection...";
       await startPeer();
@@ -54,18 +65,26 @@ create.onclick = async () => {
     if (message.type === "expired") {
       status.textContent = message.reason;
       stopLocalStream();
+      if (pingInterval) clearInterval(pingInterval);
       socket.close();
     }
   };
 
+  socket.onclose = () => {
+    if (pingInterval) clearInterval(pingInterval);
+  };
+
   window.addEventListener("beforeunload", () => {
+    if (pingInterval) clearInterval(pingInterval);
     stopLocalStream();
     socket?.close();
   });
 };
 
 async function startPeer() {
-  pc = new RTCPeerConnection();
+  pc = new RTCPeerConnection({
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+  });
   localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
   pc.onicecandidate = event => {
