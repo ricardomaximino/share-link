@@ -10,12 +10,11 @@ public class AudioPageController {
 
 	@GetMapping("/audio")
 	String senderView() {
-		return "audio/senderView";
+		return "redirect:/chat?mode=audio";
 	}
 
 	@GetMapping("/audio/r/{room}")
-	String receiverView(@PathVariable String room, Model model) {
-		model.addAttribute("room", room);
-		return "audio/receiverView";
+	String receiverView(@PathVariable String room) {
+		return "redirect:/chat/r/" + room + "?mode=audio";
 	}
 }

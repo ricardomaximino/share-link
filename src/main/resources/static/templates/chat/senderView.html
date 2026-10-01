@@ -60,12 +60,40 @@
 
       <button id="btn-start" class="btn-primary" data-i18n="btnStartHost">Create Chat Link</button>
 
-      <div class="link-box" id="link-sharing-box" style="display: none;">
-        <input id="room-link" class="link-input" readonly placeholder="Creating link...">
-        <button id="btn-copy-link" class="btn-copy" data-i18n="copyLink">Copy Link</button>
+      <div class="link-box" id="link-sharing-box" style="display: none; flex-direction: column;">
+        <div style="display: flex; gap: 8px; width: 100%;">
+          <input id="room-link" class="link-input" readonly placeholder="Creating link...">
+          <button id="btn-copy-link" class="btn-copy" data-i18n="copyLink">Copy Link</button>
+        </div>
+        <div class="link-actions">
+          <button id="btn-share" class="btn-secondary" style="display: none;">
+            <span>↗</span> <span data-i18n="shareBtn">Share</span>
+          </button>
+          <button id="btn-show-qr" class="btn-secondary">
+            <span>📱</span> <span data-i18n="qrBtn">QR Code</span>
+          </button>
+        </div>
       </div>
     </div>
   </main>
+
+  <!-- QR Code Modal -->
+  <div class="modal-overlay" id="qr-modal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title" data-i18n="qrTitle">Scan QR Code</span>
+        <button class="modal-close" id="btn-close-qr">✕</button>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted);" data-i18n="qrSubtitle">Scan with your phone to join this call instantly:</p>
+      <div class="qr-image-box">
+        <img id="qr-code-img" src="" alt="QR Code">
+      </div>
+      <button class="btn-primary" id="btn-qr-done">OK</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast-notify"></div>
 
   <!-- Meeting screen -->
   <main class="meeting-container" id="meeting-screen" style="display: none;">

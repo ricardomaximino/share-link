@@ -17,15 +17,14 @@ class AudioPageControllerTests {
 	@Test
 	void testSenderView() throws Exception {
 		mockMvc.perform(get("/audio"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("audio/senderView"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/chat?mode=audio"));
 	}
 
 	@Test
 	void testReceiverView() throws Exception {
 		mockMvc.perform(get("/audio/r/test-room"))
-				.andExpect(status().isOk())
-				.andExpect(model().attribute("room", "test-room"))
-				.andExpect(view().name("audio/receiverView"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/chat/r/test-room?mode=audio"));
 	}
 }

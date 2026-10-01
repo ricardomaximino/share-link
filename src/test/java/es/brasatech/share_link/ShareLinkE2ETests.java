@@ -37,30 +37,28 @@ class ShareLinkE2ETests {
 
 	@Test
 	void testVideoEndpoints() throws Exception {
-		// Test /video view
+		// Test /video redirect
 		mockMvc.perform(get("/video"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("video/senderView"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/chat?mode=video"));
 
-		// Test /video/r/{room} view
+		// Test /video/r/{room} redirect
 		mockMvc.perform(get("/video/r/test-video-room"))
-				.andExpect(status().isOk())
-				.andExpect(model().attribute("room", "test-video-room"))
-				.andExpect(view().name("video/receiverView"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/chat/r/test-video-room?mode=video"));
 	}
 
 	@Test
 	void testAudioEndpoints() throws Exception {
-		// Test /audio view
+		// Test /audio redirect
 		mockMvc.perform(get("/audio"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("audio/senderView"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/chat?mode=audio"));
 
-		// Test /audio/r/{room} view
+		// Test /audio/r/{room} redirect
 		mockMvc.perform(get("/audio/r/test-audio-room"))
-				.andExpect(status().isOk())
-				.andExpect(model().attribute("room", "test-audio-room"))
-				.andExpect(view().name("audio/receiverView"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/chat/r/test-audio-room?mode=audio"));
 	}
 
 	@Test

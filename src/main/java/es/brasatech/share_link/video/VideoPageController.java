@@ -10,12 +10,11 @@ public class VideoPageController {
 
 	@GetMapping("/video")
 	String senderView() {
-		return "video/senderView";
+		return "redirect:/chat?mode=video";
 	}
 
 	@GetMapping("/video/r/{room}")
-	String receiverView(@PathVariable String room, Model model) {
-		model.addAttribute("room", room);
-		return "video/receiverView";
+	String receiverView(@PathVariable String room) {
+		return "redirect:/chat/r/" + room + "?mode=video";
 	}
 }

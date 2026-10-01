@@ -17,15 +17,14 @@ class VideoPageControllerTests {
 	@Test
 	void testSenderView() throws Exception {
 		mockMvc.perform(get("/video"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("video/senderView"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/chat?mode=video"));
 	}
 
 	@Test
 	void testReceiverView() throws Exception {
 		mockMvc.perform(get("/video/r/test-room"))
-				.andExpect(status().isOk())
-				.andExpect(model().attribute("room", "test-room"))
-				.andExpect(view().name("video/receiverView"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/chat/r/test-room?mode=video"));
 	}
 }

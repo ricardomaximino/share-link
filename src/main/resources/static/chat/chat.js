@@ -61,24 +61,52 @@ let incomingFileChunks = [];
 let incomingFileReceivedBytes = 0;
 let currentIncomingCardId = null;
 
+// Link sharing controls
+const btnShare = document.querySelector("#btn-share");
+const btnShowQr = document.querySelector("#btn-show-qr");
+const qrModal = document.querySelector("#qr-modal");
+const btnCloseQr = document.querySelector("#btn-close-qr");
+const btnQrDone = document.querySelector("#btn-qr-done");
+const qrCodeImg = document.querySelector("#qr-code-img");
+const toastNotify = document.querySelector("#toast-notify");
+
+// URL mode support: ?mode=audio or ?mode=video
+const urlParams = new URLSearchParams(window.location.search);
+const requestedMode = urlParams.get("mode"); // "audio", "video", or null
+
 // Initial setup
 async function initSetup() {
+  const wantsVideo = requestedMode !== "audio";
   try {
-    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: wantsVideo });
     previewVideo.srcObject = localStream;
     localVideo.srcObject = localStream;
+    if (!wantsVideo) {
+      camEnabled = false;
+      updateCamUI(false, true);
+    }
   } catch (err) {
     console.error("Camera or microphone access denied:", err);
-    // Try audio only
+    // Fallback to audio only
     try {
       localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       camEnabled = false;
       updateCamUI(false, true);
     } catch (err2) {
       console.error("Audio access denied as well:", err2);
-      alert("Please allow camera and microphone access to use Chat Link.");
+      alert("Please allow camera and microphone access to use ShareLink.");
     }
   }
+}
+
+// Toast helper
+function showToast(msg) {
+  if (!toastNotify) return;
+  toastNotify.textContent = msg;
+  toastNotify.classList.add("show");
+  setTimeout(() => {
+    toastNotify.classList.remove("show");
+  }, 2800);
 }
 
 // Setup buttons logic
@@ -106,7 +134,7 @@ function updateMicUI(enabled, isSetup = false) {
       } else {
         btn.classList.remove("active");
         btn.classList.add("danger");
-        btn.innerHTML = "🎙️"; // crossed mic
+        btn.innerHTML = "🎙️";
       }
     }
   });
@@ -136,21 +164,65 @@ function updateCamUI(enabled, isSetup = false) {
       } else {
         btn.classList.remove("active");
         btn.classList.add("danger");
-        btn.innerHTML = "📹"; // crossed cam
+        btn.innerHTML = "📹";
       }
     }
   });
 }
 
-// Copy link logic
+// Copy link logic & Toast
 if (btnCopyLink) {
-  btnCopyLink.onclick = () => {
-    roomLink.select();
-    navigator.clipboard.writeText(roomLink.value);
-    btnCopyLink.textContent = typeof t === "function" ? t("copied") : "Copied!";
-    setTimeout(() => {
-      btnCopyLink.textContent = typeof t === "function" ? t("copyLink") : "Copy Link";
-    }, 2000);
+  btnCopyLink.onclick = async () => {
+    if (!roomLink || !roomLink.value) return;
+    try {
+      await navigator.clipboard.writeText(roomLink.value);
+      showToast(typeof t === "function" ? t("toastCopied") : "Link copied to clipboard!");
+      btnCopyLink.textContent = typeof t === "function" ? t("copied") : "Copied!";
+      setTimeout(() => {
+        btnCopyLink.textContent = typeof t === "function" ? t("copyLink") : "Copy Link";
+      }, 2000);
+    } catch (e) {
+      roomLink.select();
+      document.execCommand("copy");
+      showToast(typeof t === "function" ? t("toastCopied") : "Link copied to clipboard!");
+    }
+  };
+}
+
+// Web Share API
+if (btnShare) {
+  if (navigator.share) {
+    btnShare.style.display = "inline-flex";
+    btnShare.onclick = async () => {
+      try {
+        await navigator.share({
+          title: typeof t === "function" ? t("appTitle") : "ShareLink",
+          text: typeof t === "function" ? t("inviteBanner") : "Join my call:",
+          url: roomLink.value
+        });
+      } catch (err) {
+        // User cancelled or share failed
+      }
+    };
+  } else {
+    btnShare.style.display = "none";
+  }
+}
+
+// QR Code generation
+if (btnShowQr && qrModal) {
+  btnShowQr.onclick = () => {
+    if (!roomLink || !roomLink.value) return;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(roomLink.value)}`;
+    qrCodeImg.src = qrUrl;
+    qrModal.style.display = "flex";
+  };
+
+  const closeQr = () => { qrModal.style.display = "none"; };
+  if (btnCloseQr) btnCloseQr.onclick = closeQr;
+  if (btnQrDone) btnQrDone.onclick = closeQr;
+  qrModal.onclick = (e) => {
+    if (e.target === qrModal) closeQr();
   };
 }
 
@@ -200,7 +272,11 @@ function leaveCall() {
 btnStart.onclick = async () => {
   if (role === "sender") {
     room = crypto.randomUUID();
-    const url = `${location.origin}/chat/r/${room}`;
+    let query = "";
+    if (requestedMode) {
+      query += `?mode=${requestedMode}`;
+    }
+    const url = `${location.origin}/chat/r/${room}${query}`;
     roomLink.value = url;
     if (chatShareUrl) chatShareUrl.textContent = url;
     linkSharingBox.style.display = "flex";
