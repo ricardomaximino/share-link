@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ricardomaximino/share-link-non-native:latest
+    image: ricardomaximino/share-link:latest
     container_name: share-link
     ports:
       - "8080:8080"
