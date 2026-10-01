@@ -52,6 +52,7 @@ socket.onmessage = async event => {
   if (message.type === "expired") {
     status.textContent = message.reason;
     clearInterval(pingInterval);
+    socket.close();
   }
 };
 

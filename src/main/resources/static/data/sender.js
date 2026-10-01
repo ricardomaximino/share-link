@@ -34,6 +34,12 @@ create.onclick = async () => {
   status.textContent = "Link is alive while this tab stays open. Waiting for one receiver...";
   socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/data/signal?role=sender&room=${room}`);
 
+  let inactivityTimer = setTimeout(() => {
+    status.textContent = "Link expired due to inactivity (no receiver joined within 10 minutes).";
+    if (pingInterval) clearInterval(pingInterval);
+    socket?.close();
+  }, 10 * 60 * 1000);
+
   if (pingInterval) clearInterval(pingInterval);
   pingInterval = setInterval(() => {
     if (socket && socket.readyState === WebSocket.OPEN) {
@@ -47,6 +53,7 @@ create.onclick = async () => {
       return;
     }
     if (message.type === "receiver-joined") {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
       status.textContent = "Receiver joined. Creating direct connection...";
       await startPeer(file);
     }
@@ -57,6 +64,7 @@ create.onclick = async () => {
       await pc.addIceCandidate(message.candidate);
     }
     if (message.type === "expired") {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
       status.textContent = message.reason;
       if (pingInterval) clearInterval(pingInterval);
       socket.close();
@@ -64,10 +72,12 @@ create.onclick = async () => {
   };
 
   socket.onclose = () => {
+    if (inactivityTimer) clearTimeout(inactivityTimer);
     if (pingInterval) clearInterval(pingInterval);
   };
 
   window.addEventListener("beforeunload", () => {
+    if (inactivityTimer) clearTimeout(inactivityTimer);
     if (pingInterval) clearInterval(pingInterval);
     socket?.close();
   });

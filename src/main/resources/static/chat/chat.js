@@ -187,6 +187,7 @@ ctrlLeave.onclick = () => {
 };
 
 function leaveCall() {
+  if (pingInterval) clearInterval(pingInterval);
   if (socket) socket.close();
   if (pc) pc.close();
   if (localStream) {
@@ -217,6 +218,18 @@ function connectWS() {
   statusDot.className = "status-dot connecting";
   statusText.textContent = role === "sender" ? "Waiting for guest..." : "Joining call...";
 
+  let inactivityTimer;
+  if (role === "sender") {
+    inactivityTimer = setTimeout(() => {
+      appendLog("System", "Chat room closed due to inactivity (no guest joined within 10 minutes).", "warning");
+      statusDot.className = "status-dot idle";
+      statusText.textContent = "Expired";
+      disableInputs();
+      if (pingInterval) clearInterval(pingInterval);
+      if (socket) socket.close();
+    }, 10 * 60 * 1000);
+  }
+
   socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/chat/signal?role=${role}&room=${room}`);
 
   if (pingInterval) clearInterval(pingInterval);
@@ -233,6 +246,7 @@ function connectWS() {
     }
     
     if (msg.type === "receiver-joined") {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
       statusDot.className = "status-dot";
       statusText.textContent = "Call Active";
       
@@ -273,6 +287,7 @@ function connectWS() {
       disableInputs();
       if (pingInterval) clearInterval(pingInterval);
       if (pc) pc.close();
+      if (socket) socket.close();
     }
   };
 
